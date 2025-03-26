@@ -1,0 +1,53 @@
+QWidget {
+    background-color: #f7f7f7;
+    color: #222;
+    font-family: 'Segoe UI', 'Arial';
+    font-size: 13px;
+}
+
+QLabel {
+    font-weight: normal;
+}
+
+QPushButton {
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #222;
+}
+
+QPushButton:hover {
+    background-color: #d5d5d5;
+}
+
+QPushButton:pressed {
+    background-color: #cccccc;
+}
+
+QComboBox {
+    background-color: #ffffff;
+    color: #222;
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+}
+
+QGroupBox {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-top: 10px;
+    padding: 6px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    color: #444;
+    font-weight: bold;
+}
+
+QMessageBox {
+    background-color: #ffffff;
+    color: #222;
+}
