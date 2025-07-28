@@ -17,14 +17,13 @@ class PDFEngine(QWidget):
         self.setGeometry(100, 100, 800, 600)
         self.setMinimumSize(720, 500)
         self.logger = LogConsole()
-        self.logger.setMaximumHeight(5)
+        self.logger.setMaximumHeight(150)
 
-        font=QFont("Segoe UI", 18)
+        font = QFont("Segoe UI", 18)
         self.setFont(font)
 
         self.pdf_path = None
         self.current_operation_widget = None
-        self.logger = LogConsole()
         attach_logger(self.logger)
 
         self.initUI()
@@ -53,7 +52,13 @@ class PDFEngine(QWidget):
         main_layout.addWidget(upload_box)
 
         self.operation_picker = QComboBox()
-        self.operation_picker.addItems(["Select Operation", "🌀 Rotate PDF", "📰 2-Up Imposition"])
+        self.operation_picker.addItems([
+            "Select Operation",
+            "🌀 Rotate PDF",
+            "📘 Create Booklet (A4 → A5)",
+            "📗 Create Booklet (A4 → A6)",
+            "📕 Create Booklet (A4 → A7)"
+        ])
         self.operation_picker.currentIndexChanged.connect(self.handle_operation_change)
         self.operation_picker.hide()
         self.operation_picker.setMinimumHeight(30)
@@ -87,7 +92,11 @@ class PDFEngine(QWidget):
         if index == 1:
             self.current_operation_widget = RotationPanel(self.get_pdf_path, self.back_to_main)
         elif index == 2:
-            self.current_operation_widget = ImpositionPanel(self.get_pdf_path, self.back_to_main)
+            self.current_operation_widget = ImpositionPanel(self.get_pdf_path, self.back_to_main, fold_target="A5")
+        elif index == 3:
+            self.current_operation_widget = ImpositionPanel(self.get_pdf_path, self.back_to_main, fold_target="A6")
+        elif index == 4:
+            self.current_operation_widget = ImpositionPanel(self.get_pdf_path, self.back_to_main, fold_target="A7")
 
         if self.current_operation_widget:
             self.operation_container.addWidget(self.current_operation_widget)

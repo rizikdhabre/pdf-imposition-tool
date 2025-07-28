@@ -25,3 +25,9 @@ def log_success(file_path, operation):
     )
 
     log(message, level="INFO")
+    
+def log_error(message: str) -> None:
+    """
+    Shortcut used by core.imposition to write ERROR-level entries.
+    """
+    log(message, level="ERROR")

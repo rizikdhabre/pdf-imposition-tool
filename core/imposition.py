@@ -1,25 +1,32 @@
-import fitz  
+import os
+from typing import Tuple, Optional
+import fitz  # PyMuPDF
 
-def impose_2up(input_path, output_path):
-    source = fitz.open(input_path)
-    output = fitz.open()
+from utils.logger import log_success, log_error
+from utils.pdf_tools import plan_signatures, panel_count, build_folded_panel_order
 
-    page_width, page_height = source[0].rect.width, source[0].rect.height
 
-    for i in range(0, len(source), 2):
-        new_page = output.new_page(width=page_width * 2, height=page_height)
-        new_page.show_pdf_page(
-            fitz.Rect(0, 0, page_width, page_height),
-            source,
-            i
-        )
-        if i + 1 < len(source):
-            new_page.show_pdf_page(
-                fitz.Rect(page_width, 0, page_width * 2, page_height),
-                source,
-                i + 1
-            )
+def impose_booklet(input_pdf_path: str, fold_target: str = "A5", output_path: Optional[str] = None) -> Tuple[bool, str]:
+    try:
+        if not os.path.exists(input_pdf_path):
+            return False, f"Input file not found: {input_pdf_path}"
 
-    output.save(output_path)
-    output.close()
-    source.close()
+        doc = fitz.open(input_pdf_path)
+        n_pages = len(doc)
+        print(f"📄 Loaded PDF with {n_pages} pages.")
+
+        # Plan layout
+        signatures, blanks = plan_signatures(n_pages)
+        print(f"🧩 Planned signatures: {signatures}")
+        print(f"📦 Blank pages needed: {blanks}")
+
+        panels_per_sheet = panel_count(fold_target)
+        print(f"📐 Fold target '{fold_target}' → {panels_per_sheet} panels per A4 sheet")
+
+        panel_order, added_blanks = build_folded_panel_order(n_pages, fold_target)
+        print(f"📋 Final panel order: {panel_order}")
+
+    except Exception as e:
+        log_error(f"Booklet imposition failed: {e}")
+        return False, str(e)
+
